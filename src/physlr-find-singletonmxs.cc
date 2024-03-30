@@ -49,11 +49,15 @@ int main(int argc, char* argv[]) {
     }
 
     // Using a map to track if a minimizer is a singleton (true) or not (false)
-    std::unordered_map<std::string, bool> singletonMxs;
+    std::unordered_map<uint64_t, bool> singletonMxs;
+    singletonMxs.reserve(100000000);
 
     // Determine singleton status
-    if (!silent) {
-        std::cerr << "Determining singleton minimizers..." << std::endl;
+    auto t1 = std::chrono::steady_clock::now();
+    if (!silent) { 
+        std::cerr << "Determined singleton status - started at ";
+        std::cerr << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
+        std::cerr << " seconds" << std::endl;
     }
     for (int index = optind; index < argc; ++index) {
         std::string infile = argv[index];
@@ -66,7 +70,8 @@ int main(int argc, char* argv[]) {
             continue; // Proceed to next file
         }
 
-        std::string line, readname, minimizer;
+        std::string line, readname;
+        uint64_t minimizer;
         while (getline(ifs, line)) {
             std::istringstream iss(line);
             iss >> readname; // First part is long-read name
@@ -82,8 +87,12 @@ int main(int argc, char* argv[]) {
         }
     }
     // now check minimizerSingletonStatus to see if a minimizer is a singleton or not, and write singleton minimizers to output
+    t1 = std::chrono::steady_clock::now();
     if (!silent) {
-        std::cerr << "Writing singleton minimizers to " << outfile << std::endl;
+        std::cerr << "Determined singleton minimizers - finished at";
+        std::cerr << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
+        std::cerr << " seconds" << std::endl;
+        std::cerr << "Writing singleton minimizers to output" << std::endl;
     }
     for (auto& kv : singletonMxs) {
         if (kv.second) {
