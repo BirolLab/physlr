@@ -28,7 +28,6 @@ void printUsage(const std::string& progname) {
 
 int main(int argc, char* argv[]) {
     t0 = std::chrono::steady_clock::now();
-    bool silent = false;
     int c;
     unsigned long n = 0, N = 0;
     std::string outfile = "/dev/stdout";
