@@ -3,12 +3,12 @@ LDLIBS+=-lz -l btllib
 
 PREFIX=$(HOME)/.local
 
-.PHONY: all clean check install lint clang-format clang-tidy fix check-physlr-index-fasta check-physlr-index-pos-fasta check-physlr-index-fastq check-physlr-filter-barcodes check-physlr-filter-bxmx-first check-physlr-filter-bxmx-second check-physlr-index-stLFR check-physlr-index-stLFR-10X check-physlr-makebf check-physlr-overlap check-physlr-split-minimizers
+.PHONY: all clean check install lint clang-format clang-tidy fix check-physlr-index-fasta check-physlr-index-pos-fasta check-physlr-index-fastq check-physlr-filter-barcodes check-physlr-filter-reads check-physlr-filter-bxmx-first check-physlr-filter-bxmx-second check-physlr-index-stLFR check-physlr-index-stLFR-10X check-physlr-makebf check-physlr-overlap check-physlr-split-minimizers
 
-all: physlr-filter-barcodes physlr-overlap physlr-filter-bxmx physlr-makebf physlr-split-minimizers # physlr-molecules
+all: physlr-filter-barcodes physlr-filter-reads physlr-overlap physlr-filter-bxmx physlr-makebf physlr-split-minimizers # physlr-molecules
 
 clean:
-	rm -f physlr-filter-barcodes physlr-filter-bxmx physlr-overlap physlr-makebf physlr-split-minimizers # physlr-molecules
+	rm -f physlr-filter-barcodes physlr-filter-reads physlr-filter-bxmx physlr-overlap physlr-makebf physlr-split-minimizers # physlr-molecules
 
 # Check the C++ source code for errors.
 lint: clang-format clang-tidy
@@ -27,10 +27,14 @@ clang-format:
 fix:
 	for i in *.cc; do clang-format -i -style=file $$i; done
 
-check: check-physlr-index-fasta check-physlr-index-pos-fasta check-physlr-index-fastq check-physlr-filter-barcodes check-physlr-filter-bxmx-first check-physlr-filter-bxmx-second check-physlr-index-stLFR check-physlr-index-stLFR-10X check-physlr-makebf check-physlr-overlap # check-physlr-molecules
+check: check-physlr-index-fasta check-physlr-index-pos-fasta check-physlr-index-fastq check-physlr-filter-barcodes check-physlr-filter-reads check-physlr-filter-bxmx-first check-physlr-filter-bxmx-second check-physlr-index-stLFR check-physlr-index-stLFR-10X check-physlr-makebf check-physlr-overlap # check-physlr-molecules
 
 check-physlr-filter-barcodes: all
 	./physlr-filter-barcodes data/f1chr4-head50.tsv -o data/f1chr4-head50.n100-1000.tsv -n100 -N1000
+	./data/checkMx.sh data/f1chr4-head50.n100-1000.good.tsv data/f1chr4-head50.n100-1000.tsv
+
+check-physlr-filter-reads: all
+	./physlr-filter-reads data/f1chr4-head50.tsv -o data/f1chr4-head50.n100-1000.tsv -n100 -N1000
 	./data/checkMx.sh data/f1chr4-head50.n100-1000.good.tsv data/f1chr4-head50.n100-1000.tsv
 
 check-physlr-filter-bxmx-first: all
@@ -61,6 +65,6 @@ check-physlr-overlap: all
 check-physlr-split-minimizers: all
 	./physlr-split-minimizers -t4 data/tiny.split-minimizers.ext.mol.tsv data/tiny.split-minimizers.physlr.tsv | sort --ignore-case |diff -q - data/tiny.split-minimizers.ext.mol.split.tsv.good
 
-install: physlr-filter-barcodes physlr-overlap physlr-filter-bxmx physlr-makebf physlr-split-minimizers # physlr-molecules
+install: physlr-filter-barcodes physlr-filter-reads physlr-overlap physlr-filter-bxmx physlr-makebf physlr-split-minimizers # physlr-molecules
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install $^ $(DESTDIR)$(PREFIX)/bin
