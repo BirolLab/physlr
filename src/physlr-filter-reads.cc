@@ -1,7 +1,7 @@
 
-// // Filter reads based on the number of minimizers per read (excluding singletons minimzers)
-// // Author: Amirhossein Afshinfard
-// // Email: aafshinfard@gmail.com
+// Filter reads based on the number of minimizers per read (excluding singletons minimzers)
+// Author: Amirhossein Afshinfard
+// Email: aafshinfard@gmail.com
 
 #include <iostream>
 #include <fstream>
@@ -65,15 +65,16 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    // Read singleton minimizers into a set
-    std::unordered_set<std::string> singletons;
+    // Read singleton minimizers into a set of uint64_t
+    std::unordered_set<uint64_t> singletons;
+    singletons.reserve(100000000);
     std::ifstream sfs(singletonFile);
     if (!sfs) {
         std::cerr << "Failed to open singletons file: " << singletonFile << std::endl;
         return 1;
     }
-    std::string minimizer;
-    while (std::getline(sfs, minimizer)) {
+    uint64_t minimizer;
+    while (sfs >> minimizer) {
         singletons.insert(minimizer);
     }
 
