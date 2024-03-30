@@ -9,8 +9,18 @@
 #include <getopt.h>
 #include <cstdlib>
 #include <chrono>
+//#include <cstring>
 
 static std::chrono::time_point<std::chrono::steady_clock> t0; // NOLINT(cert-err58-cpp)
+
+// static inline void
+// assert_good(const std::ios& stream, const std::string& path)
+// {
+// 	if (!stream.good()) {
+// 		std::cerr << "error: " << strerror(errno) << ": " << path << '\n';
+// 		exit(EXIT_FAILURE);
+// 	}
+// }
 
 void printUsage(const std::string& progname) {
     std::cout << "Usage: " << progname
@@ -71,7 +81,11 @@ int main(int argc, char* argv[]) {
     
     for (int index = optind; index < argc; index++) {
         std::string infile = argv[index];
+        if (infile == "-") {
+			infile = "/dev/stdin";
+		}
         std::ifstream ifs(infile);
+        //assert_good(ifs, infile);
         if (!ifs) {
             std::cerr << "Failed to open input file: " << infile << std::endl;
             continue; // Proceed to next file
