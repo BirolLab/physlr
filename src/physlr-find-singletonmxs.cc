@@ -27,7 +27,7 @@ int main(int argc, char* argv[]) {
     int c;
     std::string outfile = "/dev/stdout";
 
-    while ((c = getopt(argc, argv, "o:n:N:s")) != -1) {
+    while ((c = getopt(argc, argv, "o:s")) != -1) {
         switch (c) {
             case 'o':
                 outfile.assign(optarg);
@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
     // Using a map to track if a minimizer is a singleton (true) or not (false)
     std::unordered_map<uint64_t, bool> singletonMxs;
-    singletonMxs.reserve(100000000);
+    singletonMxs.reserve(5000000000);
 
     // Determine singleton status
     auto t1 = std::chrono::steady_clock::now();
