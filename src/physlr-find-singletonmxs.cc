@@ -55,9 +55,9 @@ int main(int argc, char* argv[]) {
     // Determine singleton status
     auto t1 = std::chrono::steady_clock::now();
     if (!silent) { 
-        std::cerr << "Determined singleton status - started at ";
+        std::cerr << "Determining singleton status - started at ";
         std::cerr << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
-        std::cerr << " seconds" << std::endl;
+        std::cerr << " (seconds)" << std::endl;
     }
     for (int index = optind; index < argc; ++index) {
         std::string infile = argv[index];
@@ -91,7 +91,7 @@ int main(int argc, char* argv[]) {
     if (!silent) {
         std::cerr << "Determined singleton minimizers - finished at";
         std::cerr << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
-        std::cerr << " seconds" << std::endl;
+        std::cerr << " (seconds)" << std::endl;
         std::cerr << "Writing singleton minimizers to output" << std::endl;
     }
     for (auto& kv : singletonMxs) {
