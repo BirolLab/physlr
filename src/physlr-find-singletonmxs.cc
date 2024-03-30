@@ -26,7 +26,6 @@ int main(int argc, char* argv[]) {
     bool silent = false;
     int c;
     std::string outfile = "/dev/stdout";
-    bool n_set = false, N_set = false;
 
     while ((c = getopt(argc, argv, "o:n:N:s")) != -1) {
         switch (c) {
@@ -41,12 +40,6 @@ int main(int argc, char* argv[]) {
                 printUsage(argv[0]);
                 return 1;
         }
-    }
-
-    if (!n_set || !N_set) {
-        std::cerr << "Both -n and -N options must be set.\n";
-        printUsage(argv[0]);
-        return 1;
     }
 
     std::ofstream ofs(outfile, std::ofstream::out);
