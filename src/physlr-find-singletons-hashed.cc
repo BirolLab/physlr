@@ -57,6 +57,9 @@ int main(int argc, char* argv[]) {
 
     for (int index = optind; index < argc; ++index) {
         std::string infile = argv[index];
+        if (infile == "-") {
+            infile = "/dev/stdin";
+        }
         std::ifstream ifs(infile);
         if (!ifs) {
             std::cerr << "Failed to open input file: " << infile << std::endl;
