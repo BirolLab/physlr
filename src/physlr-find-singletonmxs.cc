@@ -69,10 +69,11 @@ int main(int argc, char* argv[]) {
             std::cerr << "Failed to open input file: " << infile << std::endl;
             continue; // Proceed to next file
         }
-
+        size_t lineCount = 0;
         std::string line, readname;
         uint64_t minimizer;
         while (getline(ifs, line)) {
+            ++lineCount;
             std::istringstream iss(line);
             iss >> readname; // First part is long-read name
             while (iss >> minimizer) {
@@ -83,6 +84,9 @@ int main(int argc, char* argv[]) {
                     // Second or more occurrences
                     singletonMxs[minimizer] = false; // Not a singleton
                 }
+            }
+            if (lineCount % 100000 == 0 && !silent) {
+                std::cerr << "Processed " << lineCount << " reads to determine singletong minimizers." << std::endl;
             }
         }
     }

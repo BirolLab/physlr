@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     t0 = std::chrono::steady_clock::now();
     bool silent = false;
     std::string outfile = "/dev/stdout";
-    uint64_t hashSize = 200000000000; // 
+    uint64_t hashSize = 200000000000; 
     // uint64_t hashSize = 170000000000; // 40 GB (2x20 GB)
     int c;
     while ((c = getopt(argc, argv, "o:s")) != -1) {
@@ -62,10 +62,11 @@ int main(int argc, char* argv[]) {
             std::cerr << "Failed to open input file: " << infile << std::endl;
             continue;
         }
-
+        size_t lineCount = 0;
         std::string line, readname;
         uint64_t minimizer;
         while (getline(ifs, line)) {
+            ++lineCount;
             std::istringstream iss(line);
             iss >> readname;
             while (iss >> minimizer) {
@@ -75,6 +76,10 @@ int main(int argc, char* argv[]) {
                 } else {
                     seenMoreThanOnce[hashedIndex] = true;
                 }
+            }
+            // if line count is divisible by 100000, print progress
+            if (lineCount % 100000 == 0 && !silent) {
+                std::cerr << "Processed " << lineCount << " reads to determine singleton minimizers." << std::endl;
             }
         }
     }
