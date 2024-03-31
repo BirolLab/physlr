@@ -102,7 +102,7 @@ int main(int argc, char* argv[]) {
             std::string readname;
             iss >> readname; // First part is long-read name
             size_t minimizer_count = 0;
-            std::vector<std::string> validMinimizers;
+            std::vector<uint64_t> validMinimizers;
             while (iss >> minimizer) {
                 if (singletons.find(minimizer) == singletons.end()) {
                     validMinimizers.push_back(minimizer);
