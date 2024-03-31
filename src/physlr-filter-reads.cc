@@ -67,7 +67,7 @@ int main(int argc, char* argv[]) {
 
     // Read singleton minimizers into a set of uint64_t
     std::unordered_set<uint64_t> singletons;
-    singletons.reserve(100000000);
+    singletons.reserve(6000000000);
     std::ifstream sfs(singletonFile);
     if (!sfs) {
         std::cerr << "Failed to open singletons file: " << singletonFile << std::endl;
