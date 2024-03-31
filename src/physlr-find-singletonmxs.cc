@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
     // Using a map to track if a minimizer is a singleton (true) or not (false)
     std::unordered_map<uint64_t, bool> singletonMxs;
-    singletonMxs.reserve(8000000000);
+    singletonMxs.reserve(10000000000); // 10 billion minimizers
 
     // Determine singleton status
     auto t1 = std::chrono::steady_clock::now();
@@ -86,7 +86,9 @@ int main(int argc, char* argv[]) {
                 }
             }
             if (lineCount % 500000 == 0 && !silent) {
-                std::cerr << "Processed " << lineCount << " reads to determine singletong minimizers." << std::endl;
+                auto t1 = std::chrono::steady_clock::now();
+                std::cerr << "Processed " << lineCount << " reads to determine singleton minimizers - " 
+                          << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count() << " seconds." << std::endl;
             }
         }
     }
