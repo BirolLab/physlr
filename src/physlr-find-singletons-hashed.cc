@@ -28,8 +28,8 @@ int main(int argc, char* argv[]) {
     t0 = std::chrono::steady_clock::now();
     bool silent = false;
     std::string outfile = "/dev/stdout";
-    size_t hashSize = 200000000000; // Size of the hash tables
-    // size_t hashSize = 170000000000; // 40 GB (2x20 GB)
+    uint64_t hashSize = 200000000000; // 
+    // uint64_t hashSize = 170000000000; // 40 GB (2x20 GB)
     int c;
     while ((c = getopt(argc, argv, "o:s")) != -1) {
         switch (c) {
