@@ -85,7 +85,7 @@ int main(int argc, char* argv[]) {
                     singletonMxs[minimizer] = false; // Not a singleton
                 }
             }
-            if (lineCount % 100000 == 0 && !silent) {
+            if (lineCount % 500000 == 0 && !silent) {
                 std::cerr << "Processed " << lineCount << " reads to determine singletong minimizers." << std::endl;
             }
         }

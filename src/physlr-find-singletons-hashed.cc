@@ -78,7 +78,7 @@ int main(int argc, char* argv[]) {
                 }
             }
             // if line count is divisible by 100000, print progress
-            if (lineCount % 100000 == 0 && !silent) {
+            if (lineCount % 500000 == 0 && !silent) {
                 std::cerr << "Processed " << lineCount << " reads to determine singleton minimizers." << std::endl;
             }
         }
