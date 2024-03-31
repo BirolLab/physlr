@@ -28,7 +28,7 @@ int main(int argc, char* argv[]) {
     t0 = std::chrono::steady_clock::now();
     bool silent = false;
     std::string outfile = "/dev/stdout";
-    uint64_t hashSize = 200000000000; 
+    uint64_t hashSize = 500000000000; 
     // uint64_t hashSize = 170000000000; // 40 GB (2x20 GB)
     int c;
     while ((c = getopt(argc, argv, "o:s")) != -1) {
@@ -82,7 +82,9 @@ int main(int argc, char* argv[]) {
             }
             // if line count is divisible by 100000, print progress
             if (lineCount % 500000 == 0 && !silent) {
-                std::cerr << "Processed " << lineCount << " reads to determine singleton minimizers." << std::endl;
+                auto t1 = std::chrono::steady_clock::now();
+                std::cerr << "Processed " << lineCount << " reads to determine singleton minimizers - " 
+                          << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count() << " seconds." << std::endl;
             }
         }
     }
@@ -100,7 +102,9 @@ int main(int argc, char* argv[]) {
         auto duration = std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
         std::cerr << "Process completed in " << duration << " seconds." << std::endl;
     }
-
-        
-        return 0;
+    // print size of seenOnce and seenMoreThanOnce
+    std::cerr << "Size of seenOnce: " << seenOnce.size() << std::endl;
+    std::cerr << "Size of seenMoreThanOnce: " << seenMoreThanOnce.size() << std::endl;
+    
+    return 0;
 }

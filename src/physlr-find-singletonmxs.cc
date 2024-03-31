@@ -50,7 +50,7 @@ int main(int argc, char* argv[]) {
 
     // Using a map to track if a minimizer is a singleton (true) or not (false)
     std::unordered_map<uint64_t, bool> singletonMxs;
-    singletonMxs.reserve(5000000000);
+    singletonMxs.reserve(8000000000);
 
     // Determine singleton status
     auto t1 = std::chrono::steady_clock::now();
@@ -102,6 +102,17 @@ int main(int argc, char* argv[]) {
         if (kv.second) {
             ofs << kv.first << std::endl;
         }
+    }
+    // print time after writing to output
+    t1 = std::chrono::steady_clock::now();
+    if (!silent) {
+        std::cerr << "Finished writing singleton minimizers to output at ";
+        std::cerr << std::chrono::duration_cast<std::chrono::seconds>(t1 - t0).count();
+        std::cerr << " (seconds)" << std::endl;
+    }
+    // print size of singletonMxs
+    if (!silent) {
+        std::cerr << "Size of singleton minimizers: " << singletonMxs.size() << std::endl;
     }
     return 0;
 }
