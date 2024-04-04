@@ -3,12 +3,12 @@ LDLIBS+=-lz -l btllib
 
 PREFIX=$(HOME)/.local
 
-.PHONY: all clean check install lint clang-format clang-tidy fix check-physlr-index-fasta check-physlr-index-pos-fasta check-physlr-index-fastq check-physlr-filter-barcodes check-physlr-filter-reads check-physlr-filter-bxmx-first check-physlr-filter-bxmx-second check-physlr-index-stLFR check-physlr-index-stLFR-10X check-physlr-makebf check-physlr-overlap check-physlr-split-minimizers
+.PHONY: all clean check install lint clang-format clang-tidy fix check-physlr-index-fasta check-physlr-index-pos-fasta check-physlr-index-fastq check-physlr-filter-barcodes check-physlr-filter-readmxs check-physlr-filter-reads check-physlr-filter-bxmx-first check-physlr-filter-bxmx-second check-physlr-index-stLFR check-physlr-index-stLFR-10X check-physlr-makebf check-physlr-overlap check-physlr-split-minimizers
 
-all: physlr-filter-barcodes physlr-filter-reads physlr-overlap physlr-filter-bxmx physlr-makebf physlr-split-minimizers # physlr-molecules
+all: physlr-filter-barcodes physlr-filter-readmxs physlr-filter-reads physlr-overlap physlr-filter-bxmx physlr-makebf physlr-split-minimizers # physlr-molecules
 
 clean:
-	rm -f physlr-filter-barcodes physlr-filter-reads physlr-filter-bxmx physlr-overlap physlr-makebf physlr-split-minimizers # physlr-molecules
+	rm -f physlr-filter-barcodes physlr-filter-readmxs physlr-filter-reads physlr-filter-bxmx physlr-overlap physlr-makebf physlr-split-minimizers # physlr-molecules
 
 # Check the C++ source code for errors.
 lint: clang-format clang-tidy
@@ -65,6 +65,6 @@ check-physlr-overlap: all
 check-physlr-split-minimizers: all
 	./physlr-split-minimizers -t4 data/tiny.split-minimizers.ext.mol.tsv data/tiny.split-minimizers.physlr.tsv | sort --ignore-case |diff -q - data/tiny.split-minimizers.ext.mol.split.tsv.good
 
-install: physlr-filter-barcodes physlr-filter-reads physlr-overlap physlr-filter-bxmx physlr-makebf physlr-split-minimizers # physlr-molecules
+install: physlr-filter-barcodes physlr-filter-readmxs physlr-filter-reads physlr-overlap physlr-filter-bxmx physlr-makebf physlr-split-minimizers # physlr-molecules
 	install -d $(DESTDIR)$(PREFIX)/bin
 	install $^ $(DESTDIR)$(PREFIX)/bin
