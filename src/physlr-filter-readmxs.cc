@@ -33,7 +33,7 @@ void populateBFs(const std::string& filePath, btllib::KmerBloomFilter* firstOcc,
         iss >> readName; // Skip read name
 
         while (iss >> minimizer) {
-            const uint64_t* minimizerPtr = &minimizer
+            const uint64_t* minimizerPtr = &minimizer;
             if (!firstOcc->contains(minimizerPtr)) {
                 firstOcc->insert(minimizerPtr);
             } else if (!secondOcc->contains(minimizerPtr)) {
@@ -60,7 +60,7 @@ void filterReads(const std::string& filePath, btllib::KmerBloomFilter* secondOcc
         while (iss >> minimizer) {
             const uint64_t* minimizerPtr = &minimizer;
             if (secondOcc->contains(minimizerPtr)) {
-                minimizers.push_back(minimizerPtr);
+                minimizers.push_back(minimizer);
             }
         }
 
