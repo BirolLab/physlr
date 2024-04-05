@@ -19,6 +19,11 @@
     *
     * Author: Amirhossein Afshinfard <
     * email: aafshinfard@bcgsc.ca
+    * IMPROVE: 
+    * 1. Before running the program, use a command line command to remove reads with few minimizers -> fewer reads to process and fewer minimizers to keep track of. 
+    * 2. Add a Bloom filter to keep track of new singletons after removing reads with few minimizers, instead of runnning another code of two passes -> saves one pass.
+    * 3. Parallelize the program.
+    * 
 */
 
 void populateBFs(const std::string& filePath, btllib::KmerBloomFilter* firstOcc, btllib::KmerBloomFilter* secondOcc) {
@@ -73,6 +78,7 @@ void filterReads(const std::string& filePath, btllib::KmerBloomFilter* secondOcc
         }
         if (lineCount % 500000 == 0) {
             std::cerr << "Processed " << lineCount << " reads to filter reads based on minimizer count" << std::endl;
+        }
     }
 }
 
@@ -137,13 +143,16 @@ int main(int argc, const char* argv[]) {
     std::cerr << "\t\t--min: " << min_min << std::endl;
     std::cerr << "\t\t--max: " << max_min << std::endl;
     
-    btllib::KmerBloomFilter firstOcc(bloomSize, 1, k);
-    btllib::KmerBloomFilter secondOcc(bloomSize, 1, k);
+    btllib::KmerBloomFilter* firstOcc = 
+    new btllib::KmerBloomFilter(bloomSize, 1, k);
+    btllib::KmerBloomFilter* secondOcc =
+    new btllib::KmerBloomFilter(bloomSize, 1, k);
+    
 
-    populateBFs(inputFilePath, &firstOcc, &secondOcc);
-    firstOcc.clear();
+    populateBFs(inputFilePath, firstOcc, secondOcc);
+    delete firstOcc;
     // improve: add another bloom filter to keep track of new singletons after removing reads with few minimizers
-    filterReads(inputFilePath, &secondOcc, outputFilePath, min_min, max_min);
+    filterReads(inputFilePath, secondOcc, outputFilePath, min_min, max_min);
 
     return 0;
 }
