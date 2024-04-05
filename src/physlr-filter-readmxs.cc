@@ -33,10 +33,11 @@ void populateBFs(const std::string& filePath, btllib::KmerBloomFilter* firstOcc,
         iss >> readName; // Skip read name
 
         while (iss >> minimizer) {
-            if (!firstOcc->contains(minimizer)) {
-                firstOcc->insert(minimizer);
-            } else if (!secondOcc->contains(minimizer)) {
-                secondOcc->insert(minimizer);
+            const uint64_t* minimizerPtr = &minimizer
+            if (!firstOcc->contains(minimizerPtr)) {
+                firstOcc->insert(minimizerPtr);
+            } else if (!secondOcc->contains(minimizerPtr)) {
+                secondOcc->insert(minimizerPtr);
             }
         }
         if (lineCount % 500000 == 0) {
@@ -57,8 +58,9 @@ void filterReads(const std::string& filePath, btllib::KmerBloomFilter* secondOcc
         iss >> readName;
         std::vector<uint64_t> minimizers;
         while (iss >> minimizer) {
-            if (secondOcc->contains(minimizer)) {
-                minimizers.push_back(minimizer);
+            const uint64_t* minimizerPtr = &minimizer;
+            if (secondOcc->contains(minimizerPtr)) {
+                minimizers.push_back(minimizerPtr);
             }
         }
 
