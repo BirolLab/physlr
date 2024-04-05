@@ -1,9 +1,9 @@
 #include "btllib/bloom_filter.hpp"
-//#include "btllib/seq_reader.hpp"
 #include "btllib/util.hpp"
 #include <argparse/argparse.hpp>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -23,124 +23,125 @@
 
 void populateBFs(const std::string& filePath, btllib::KmerBloomFilter* firstOcc, btllib::KmerBloomFilter* secondOcc) {
     std::ifstream inFile(filePath);
-    std::string line, readName, minimizer;
+    std::string line, readName;
+    uint64_t minimizer;
+    // count lines and print a log after every 500000 lines
+    unsigned int lineCount = 0;
     while (getline(inFile, line)) {
+        ++lineCount;
         std::istringstream iss(line);
         iss >> readName; // Skip read name
 
         while (iss >> minimizer) {
-            // the minimizer is already a hash value so use it directly
             if (!firstOcc->contains(minimizer)) {
                 firstOcc->insert(minimizer);
             } else if (!secondOcc->contains(minimizer)) {
                 secondOcc->insert(minimizer);
             }
         }
+        if (lineCount % 500000 == 0) {
+            std::cerr << "Processed " << lineCount << " reads to populate cascading Bloom filters" << std::endl;
+        }
     }
 }
 
-void filterReads(const std::string& filePath, btllib::KmerBloomFilter* firstOcc, btllib::KmerBloomFilter* secondOcc, bool keepSingletons=false, const std::string& outFilePath, unsigned int min_min, unsigned int max_min); {
+void filterReads(const std::string& filePath, btllib::KmerBloomFilter* secondOcc, const std::string& outFilePath, unsigned int min_mxs, unsigned int max_mxs) {
     std::ifstream inFile(filePath);
     std::ofstream outFile(outFilePath);
     std::string line, readName;
     uint64_t minimizer;
+    unsigned int lineCount = 0;
     while (getline(inFile, line)) {
+        ++lineCount;
         std::istringstream iss(line);
         iss >> readName;
         std::vector<uint64_t> minimizers;
         while (iss >> minimizer) {
-            // only push minimizer if its in the second bloom filter
             if (secondOcc->contains(minimizer)) {
                 minimizers.push_back(minimizer);
             }
         }
 
-        if (minimizers.size() < min_min || minimizers.size() > max_min) {
-            continue;
+        if (minimizers.size() >= min_mxs && minimizers.size() <= max_mxs) {
+            outFile << readName;
+            for (const auto& min : minimizers) {
+                outFile << " " << min;
+            }
+            outFile << std::endl;
         }
-
-        outFile << readName;
-        for (const auto& minimizer : minimizers) {
-            outFile << " " << minimizer;
-        }
-        outFile << std::endl;
+        if (lineCount % 500000 == 0) {
+            std::cerr << "Processed " << lineCount << " reads to filter reads based on minimizer count" << std::endl;
     }
 }
 
 int main(int argc, const char* argv[]) {
-    
     argparse::ArgumentParser program("filter-readmxs");
-    
+
     program.add_argument("-i", "--input")
-    .help("Input file containing minimizers")
-    .required();
+           .help("Input file containing minimizers")
+           .required();
 
     program.add_argument("-o", "--output")
-    .help("Output file containing filtered minimizers")
-    .required();
+           .help("Output file for filtered reads")
+           .required();
 
-    program.add_argument("-t")
-    .help("Number of threads")
-    .default_value((unsigned int)1)
-    .scan<'u', unsigned int>();
+    program.add_argument("--fpr")
+           .help("False positive rate for Bloom filter")
+           .default_value(0.025)
+           .scan<'g', double>();
 
-    parser.add_argument("--fpr")
-    .help("False positive rate for Bloom filter")
-    .default_value((double)0.025)
-    .scan<'g', double>();
+    program.add_argument("--bf")
+           .help("Size of the Bloom filter")
+           .default_value(10000000)
+           .scan<'u', unsigned int>();
     
-    parser.add_argument("--bf")
-    .help("Size of the Bloom filter")
-    .default_value((unsigned int)10000000)
-    .scan<'u', unsigned int>();
+    program.add_argument("-k")
+           .help("k-mer size (bp)")
+           .required()
+           .scan<'u', unsigned>();
     
-    parser.add_argument("--keep-singletons")
-    .help("Keep singleton minimizers")
-    .default_value(false)
-    .implicit_value(true);
-    
-    parser.add_argument("--max")
-    .help("Maximum number of minimizers per read")
-    .default_value((unsigned int)1000)
-    .scan<'u', unsigned int>();
+    program.add_argument("--min")
+           .help("Minimum number of minimizers per read to keep")
+           .default_value(1)
+           .scan<'u', unsigned int>();
 
-    parser.add_argument("--min")
-    .help("Minimum number of minimizers per read")
-    .default_value((unsigned int)1)
-    .scan<'u', unsigned int>();
+    program.add_argument("--max")
+           .help("Maximum number of minimizers per read to keep")
+           .default_value(100000)
+           .scan<'u', unsigned int>();
 
     try {
         program.parse_args(argc, argv);
     } catch (const std::runtime_error& err) {
-        std::cout << err.what() << std::endl;
-        std::cout << program;
-        exit(0);
+        std::cerr << err.what() << std::endl;
+        std::cerr << program;
+        return 1;
     }
 
-    unsigned num_threads = parser.get<unsigned>("t");
-    double fpr = parser.get<double>("fpr");
-    unsigned bloomSize = parser.get<unsigned>("bf");
-    bool keepSingletons = parser.get<bool>("keep-singletons");
-    unsigned int min_min = parser.get<unsigned>("min");
-    unsigned int max_min = parser.get<unsigned>("max");
-    std::string inputFilePath = parser.get<std::string>("input");
-    std::string outputFilePath = parser.get<std::string>("output");
+    unsigned int bloomSize = program.get<unsigned int>("bf");
+    double fpr = program.get<double>("fpr");
+    std::string inputFilePath = program.get<std::string>("input");
+    std::string outputFilePath = program.get<std::string>("output");
+    unsigned int min_min = program.get<unsigned int>("min");
+    unsigned int max_min = program.get<unsigned int>("max");
+    unsigned k = program.get<unsigned>("k");
+
+    // print the parameters
+    std::cerr << "\t\t--input: " << inputFilePath << std::endl;
+    std::cerr << "\t\t--output: " << outputFilePath << std::endl;
+    std::cerr << "\t\t--fpr: " << fpr << std::endl;
+    std::cerr << "\t\t--bf: " << bloomSize << std::endl;
+    std::cerr << "\t\t-k: " << k << std::endl;
+    std::cerr << "\t\t--min: " << min_min << std::endl;
+    std::cerr << "\t\t--max: " << max_min << std::endl;
     
-    // print the arguments
-    std::cout << "\t\t-t: " << num_threads << std::endl;
-    std::cout << "\t\t--fpr: " << fpr << std::endl;
-    std::cout << "\t\t--bf: " << bloomSize << std::endl;
-    std::cout << "\t\t--keep-singletons: " << keepSingletons << std::endl;
-    std::cout << "\t\t--min: " << min_min << std::endl;
-    std::cout << "\t\t--max: " << max_min << std::endl;
-    std::cout << "\t\t--input: " << inputFilePath << std::endl;
-    std::cout << "\t\t--output: " << outputFilePath << std::endl;
-    
-    btllib::KmerBloomFilter firstOcc(bloomSize, fpr);
-    btllib::KmerBloomFilter secondOcc(bloomSize, fpr);
+    btllib::KmerBloomFilter firstOcc(bloomSize, 1, k);
+    btllib::KmerBloomFilter secondOcc(bloomSize, 1, k);
 
     populateBFs(inputFilePath, &firstOcc, &secondOcc);
-    filterReads(inputFilePath, &firstOcc, &secondOcc, outputFilePath, keepSingletons, min_min, max_min);
+    firstOcc.clear();
+    // improve: add another bloom filter to keep track of new singletons after removing reads with few minimizers
+    filterReads(inputFilePath, &secondOcc, outputFilePath, min_min, max_min);
 
     return 0;
 }
