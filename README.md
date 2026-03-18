@@ -11,6 +11,16 @@ Physlr: Next-generation Physical Maps
 ================================================================================
 
 Physlr `physical-map` constructs a *de novo* physical map using linked reads from 10X Genomics or MGI stLFR. This physical map can then be used for various genomics analyses, including scaffolding. Physlr `scaffolds` uses the physical map generated in the first stage to scaffold an existing genome assembly to yield chromosome-level contiguity.
+* [ntCard](https://github.com/BirolLab/ntCard)
+* [ntHits](https://github.com/BirolLab/ntHits)
+* GCC 5 or newer with [OpenMP](https://www.openmp.org) and [boost](https://www.boost.org)
+* Python 3.5 or newer and the following packages
+    * [community](https://python-louvain.readthedocs.io/en/latest/api.html)
+    * [networkx](https://networkx.github.io/)
+    * [numpy](https://numpy.org/)
+    * [scipy](https://www.scipy.org/)
+    * [sklearn](https://scikit-learn.org/stable/)
+    * [tqdm](https://tqdm.github.io/)
 
 <p align="center">
   <img src="physlr-stages.png" width="250" title="Physlr stages">
@@ -66,16 +76,16 @@ conda install -c conda-forge pypy3.8 # Change specified version based on your co
 
 Compile Physlr using the following commands:
 ```
-pip3 install --user git+https://github.com/bcgsc/physlr
-git clone https://github.com/bcgsc/physlr
+pip3 install --user git+https://github.com/BirolLab/physlr
+git clone https://github.com/BirolLab/physlr
 cd physlr/src && make install
 ```
 
 or, to install Physlr in a specified directory (like `/opt/physlr`):
 
 ```
-pip3 install --user git+https://github.com/bcgsc/physlr
-git clone https://github.com/bcgsc/physlr
+pip3 install --user git+https://github.com/BirolLab/physlr
+git clone https://github.com/BirolLab/physlr
 cd physlr/src && make install PREFIX=/opt/physlr
 ```
 after compiling, Physlr commands will be available through:
@@ -178,7 +188,7 @@ Acknowledgements
 ================================================================================
 
 This projects uses:
-* [btl_bloomfilter](https://github.com/bcgsc/btl_bloomfilter) BTL C/C++ Common bloom filters for bioinformatics projects implemented by Justin Chu
-* [nthash](https://github.com/bcgsc/ntHash) rolling hash implementation by Hamid Mohamadi
+* [btl_bloomfilter](https://github.com/BirolLab/btl_bloomfilter) BTL C/C++ Common bloom filters for bioinformatics projects implemented by Justin Chu
+* [nthash](https://github.com/BirolLab/ntHash) rolling hash implementation by Hamid Mohamadi
 * [readfq](https://github.com/lh3/readfq) Fast multi-line FASTA/Q reader API implemented by Heng Li
 * [robin-map](https://github.com/Tessil/robin-map) C++ implementation of a fast hash map and hash set using robin hood hashing by Thibaut G.
