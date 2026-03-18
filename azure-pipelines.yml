@@ -39,6 +39,9 @@ jobs:
       source activate physlr
       make -C src lint
     displayName: Run clang-format and clang-tidy
+  - publish: physlr-molecules.cc.fixed
+    artifact: physlr-molecules.cc.fixed
+    condition: always()
   - script: |
       source activate physlr
       make -C src check
