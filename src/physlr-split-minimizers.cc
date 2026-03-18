@@ -94,7 +94,7 @@ printHelpDialog()
 	    "  -v         enable verbose output\n"
 	    "  --version     Print version\n"
 	    "  --help     display this help and exit\n"
-	    "Report bugs to <jowong@bcgsc.ca>.";
+	    "Report bugs to <jowong@bccrc.ca>.";
 	std::cerr << dialog << std::endl;
 	exit(0);
 }

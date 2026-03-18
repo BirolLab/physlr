@@ -11,7 +11,7 @@ setuptools.setup(
     description="Next-generation Physical Maps using Linked Reads",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/bcgsc/physlr",
+    url="https://github.com/BirolLab/physlr",
     license="GPLv3",
     python_requires=">=3",
     install_requires=["networkx", "numpy", "python-louvain", "scipy", "scikit-learn", "tqdm" ],

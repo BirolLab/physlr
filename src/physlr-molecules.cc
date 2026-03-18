@@ -347,8 +347,9 @@ make_subgraph(Graph& g, Graph& subgraph, edgeSet_c& edgeSet, vertexIter vBegin, 
 	for (boost::tie(vIter1, vend1) = vertices(subgraph); vIter1 != vend1; ++vIter1) {
 		for (boost::tie(vIter2, vend2) = vertices(subgraph); vIter2 != vend2; ++vIter2) {
 			if (vIter1 != vIter2) {
-				auto got = edgeSet.find(std::make_pair(
-				    subgraph[*vIter1].indexOriginal, subgraph[*vIter2].indexOriginal));
+				auto got = edgeSet.find(
+				    std::make_pair(
+				        subgraph[*vIter1].indexOriginal, subgraph[*vIter2].indexOriginal));
 
 				if (got != edgeSet.end()) {
 					auto newEdge = boost::add_edge(*vIter1, *vIter2, subgraph).first;
