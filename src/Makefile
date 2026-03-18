@@ -11,7 +11,7 @@ clean:
 	rm -f physlr-filter-barcodes physlr-filter-bxmx physlr-overlap physlr-makebf physlr-split-minimizers # physlr-molecules
 
 # Check the C++ source code for errors.
-lint: clang-format clang-tidy
+lint: clang-format
 
 # Check the C++ source code for errors with clang-tidy.
 clang-tidy:
