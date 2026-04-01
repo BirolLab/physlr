@@ -95,9 +95,9 @@ bin/physlr-make help
 ```
 ### Dependencies
 
-* [ntCard](https://github.com/bcgsc/ntCard)
-* [ntHits](https://github.com/bcgsc/ntHits)
-* [btllib](https://github.com/bcgsc/btllib)
+* [ntCard](https://github.com/BirolLab/ntCard)
+* [ntHits](https://github.com/BirolLab/ntHits)
+* [btllib](https://github.com/BirolLab/btllib)
 * GCC 5 or newer with [OpenMP](https://www.openmp.org) and [boost](https://www.boost.org)
 * Python 3.5 or newer and the following packages
     * [community](https://python-louvain.readthedocs.io/en/latest/api.html)
@@ -180,9 +180,9 @@ Afshinfard A, Jackman SD, Wong J, Coombe L, Chu J, Nikolic V, Dilek G, Malkoç Y
 Support
 ================================================================================
 
-[Create a new issue on GitHub.](https://github.com/bcgsc/physlr/issues)
+[Create a new issue on GitHub.](https://github.com/BirolLab/physlr/issues)
 
-[![GitHub issues](https://img.shields.io/github/issues/bcgsc/physlr.svg)](https://gitHub.com/bcgsc/physlr/issues)
+[![GitHub issues](https://img.shields.io/github/issues/BirolLab/physlr.svg)](https://gitHub.com/BirolLab/physlr/issues)
 
 Acknowledgements
 ================================================================================
